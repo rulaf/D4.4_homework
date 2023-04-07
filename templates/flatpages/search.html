@@ -1,0 +1,66 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+<!--Заголовок страницы-->
+{% block title %}
+Search
+{% endblock title %}
+
+<!--Описание содержания страницы-->
+{% block content %}
+    <h1>Поиск публикаций</h1>
+    <hr>
+    <h4>Фильтры поиска</h4>
+    <br>
+    <!-- Перед таблицей добавим форму для поиска -->
+    <form method="GET">
+        {{ filter.form.as_p }} 
+        <input type="submit" value="Поиск"> <!--Кнопка для начала поиска-->
+    </form>
+    <hr>
+    <!--Если публикации есть, то выводятся поля для поиска-->
+    {% if posts_search %}
+        <table style="margin: auto" border = "2">
+           <thead>
+              <th>
+                  <b> &nbsp Заголовок &nbsp </b>
+              </th>
+              <th>
+                  <b> &nbsp Дата публикации &nbsp </b>
+              </th>
+              <th>
+                  <b> &nbsp Автор публикации &nbsp </b>
+              </th>
+              <th>
+                  <b> &nbsp Категория &nbsp </b>
+              </th>
+              <th>
+                  <b> &nbsp Краткое содержание &nbsp</b>
+              </th>
+           </thead>
+      {% for post in filter.qs %} 
+          <tr>
+              <td>
+                <a href="{% url 'post_detail' post.id %}">{{ post.title|truncatechars:64|censor }}</a>  
+              </td>
+              <td>
+                  {{ post.dateCreation|date:'d M Y'}}
+              </td>
+              <td>
+                  {{ post.author }}
+              </td>
+              <td>
+                  {{ post.categoryType }}
+              </td>
+              <td>
+                  {{ post.text|truncatechars:124|censor }}
+              </td>
+          </tr>
+      {% endfor %}
+      </table>
+    <br>
+    <!--если нет публикаций, то выводится сообщение ниже-->
+    {% else %}
+      <h2>Публикаций нет!</h2>
+    {% endif %}
+{% endblock content %}
